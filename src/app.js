@@ -29,7 +29,6 @@ app.post("/repositories", (request, response) => {
     url,
     techs,
     likes: 0,
-    usersliked: [],
   }
 
   repositories.push(repository)
@@ -54,7 +53,6 @@ app.put("/repositories/:id", (request, response) => {
     url,
     techs,
     likes: repositories[reposityIndex].likes,
-    usersliked: repositories[reposityIndex].usersliked,
   }
 
   repositories[reposityIndex] = repository;
@@ -73,7 +71,7 @@ app.delete("/repositories/:id", (request, response) => {
 
   repositories.splice(reposityIndex, 1);
 
-  return response.status(200).send();
+  return response.status(204).send();
 });
 
 app.post("/repositories/:id/like", (request, response) => {
@@ -86,16 +84,9 @@ app.post("/repositories/:id/like", (request, response) => {
     return response.status(400).json({error: "Project not found!"})
   }
 
-  const userAlredyLiked = repositories[reposityIndex].usersliked.findIndex(liked => liked === url);
-
-  if(userAlredyLiked >= 0) {
-    return response.status(400).json({error: "User alredy liked this repo!"})
-  }
-
   repositories[reposityIndex].likes++;
-  repositories[reposityIndex].usersliked.push(url);
 
-  return response.status(200).json(repositories[reposityIndex]);
+  return response.json(repositories[reposityIndex]);
 });
 
 module.exports = app;
